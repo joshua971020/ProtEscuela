@@ -131,7 +131,7 @@ class DashboardPage extends StatelessWidget {
           children: [
             // Título de sección estilizado
             Text(
-              'Bienvenido al Portal',
+              'Esto es una prueba',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold, 
                 color: Theme.of(context).colorScheme.primary,
