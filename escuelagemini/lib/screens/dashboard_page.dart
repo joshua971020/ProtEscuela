@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'grades_page.dart'; // Asumiendo que existe
-import 'messages_page.dart'; // Asumiendo que existe
-import 'students_page.dart'; // Asumiendo que existe
-import 'courses_page.dart'; // Asumiendo que existe
-import 'teachers_page.dart'; // Asumiendo que existe
-import 'login_page.dart'; // Asumiendo que existe
+import 'grades_page.dart';
+import 'messages_page.dart';
+import 'students_page.dart';
+import 'courses_page.dart';
+import 'teachers_page.dart';
+import 'login_page.dart';
+import 'administracion_page.dart'; // ✅ Nueva página agregada
 import 'package:google_fonts/google_fonts.dart';
-
-// --- NUEVA PÁGINA DE CURSOS ADICIONALES ---
 
 class AdditionalCoursesPage extends StatelessWidget {
   const AdditionalCoursesPage({super.key});
@@ -59,7 +58,7 @@ class AdditionalCoursesPage extends StatelessWidget {
   }
 }
 
-// --- PÁGINA PRINCIPAL DASHBOARD ---
+// --- DASHBOARD PRINCIPAL ---
 
 class DashboardPage extends StatelessWidget {
   final String userRole;
@@ -69,49 +68,43 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Definimos las opciones de menú en una lista, incluyendo íconos
     List<Map<String, dynamic>> menuOptions = [];
 
-    // Opciones para el rol de Administrador
     if (userRole == 'admin') {
       menuOptions.addAll([
         {'title': 'Gestión de Estudiantes', 'icon': Icons.people_alt, 'page': const StudentsPage()},
         {'title': 'Gestión de Profesores', 'icon': Icons.school, 'page': const TeachersPage()},
         {'title': 'Gestión de Cursos', 'icon': Icons.library_books, 'page': const CoursesPage()},
+        {'title': 'Administración', 'icon': Icons.admin_panel_settings, 'page': const AdministracionPage()}, // ✅ NUEVO CARD
       ]);
-    } 
-    // Opciones para el rol de Profesor
-    else if (userRole == 'teacher') {
+    } else if (userRole == 'teacher') {
       menuOptions.addAll([
         {'title': 'Gestión de Estudiantes', 'icon': Icons.people_alt, 'page': const StudentsPage()},
         {'title': 'Mis Cursos', 'icon': Icons.library_books, 'page': const CoursesPage()},
         {'title': 'Calificaciones', 'icon': Icons.score, 'page': GradesPage(studentId: userId)},
       ]);
-    } 
-    // Opciones para el rol de Estudiante
-    else if (userRole == 'student') {
+    } else if (userRole == 'student') {
       menuOptions.addAll([
         {'title': 'Mis Cursos', 'icon': Icons.library_books, 'page': const CoursesPage()},
         {'title': 'Mis Calificaciones', 'icon': Icons.score, 'page': GradesPage(studentId: userId)},
       ]);
     }
 
-    // Opciones universales (Cursos Adicionales y Mensajes)
     menuOptions.add({
-      'title': 'Cursos Adicionales', 
-      'icon': Icons.extension, 
-      'page': const AdditionalCoursesPage() // Nueva página agregada aquí
+      'title': 'Cursos Adicionales',
+      'icon': Icons.extension,
+      'page': const AdditionalCoursesPage(),
     });
+
     menuOptions.add({
-      'title': 'Mensajes', 
-      'icon': Icons.chat_bubble_outline, 
-      'page': MessagesPage(currentUserId: userId)
+      'title': 'Mensajes',
+      'icon': Icons.chat_bubble_outline,
+      'page': MessagesPage(currentUserId: userId),
     });
 
     return Scaffold(
       appBar: AppBar(
-        // El estilo de la AppBar viene del tema de main.dart
-        title: Text('Dashboard de ${userRole.toUpperCase()}', style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Text('Dashboard de ${userRole.toUpperCase()}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
@@ -129,7 +122,6 @@ class DashboardPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Título de sección estilizado
             Text(
               'Bienvenido al Portal',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -145,15 +137,14 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // GridView para mostrar las opciones como tarjetas
             GridView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(), // Desactiva el scroll interno
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Dos tarjetas por fila
+                crossAxisCount: 2,
                 crossAxisSpacing: 16.0,
                 mainAxisSpacing: 16.0,
-                childAspectRatio: 1.0, // Tarjetas cuadradas
+                childAspectRatio: 1.0,
               ),
               itemCount: menuOptions.length,
               itemBuilder: (context, index) {
@@ -172,33 +163,23 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // Widget de tarjeta profesional con estilo degradado y sombra
   Widget _buildDashboardCard(BuildContext context, String title, IconData icon, Widget page) {
-    // Usamos el color de acento (naranja) para Mensajes y Cursos Adicionales
     final bool isSpecialCard = title == 'Mensajes' || title == 'Cursos Adicionales';
     final Color primaryColor = Theme.of(context).colorScheme.primary;
     final Color accentColor = Theme.of(context).colorScheme.secondary;
 
-    final Color cardColor = isSpecialCard 
-        ? accentColor 
-        : primaryColor;
-    
+    final Color cardColor = isSpecialCard ? accentColor : primaryColor;
+
     return Card(
-      elevation: 10, // Sombra moderna
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      elevation: 10,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => page),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => page));
         },
         child: Container(
           decoration: BoxDecoration(
-            // Aplicamos un degradado sutil al color de la tarjeta
             gradient: LinearGradient(
               colors: [cardColor.withOpacity(1.0), cardColor.withOpacity(0.8)],
               begin: Alignment.topLeft,
@@ -210,11 +191,7 @@ class DashboardPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(
-                  icon,
-                  size: 48,
-                  color: Colors.white, // Ícono blanco para alto contraste
-                ),
+                Icon(icon, size: 48, color: Colors.white),
                 const SizedBox(height: 12),
                 Text(
                   title,
